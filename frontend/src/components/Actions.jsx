@@ -5,14 +5,14 @@ const Actions = () => {
   const [actions, setActions] = useState([]);
   const [type, setType] = useState("gol");
   const [minute, setMinute] = useState("");
-  const [playerId, setPlayerId] = useState("");
+  const [dorsal, setDorsal] = useState("");
 
   useEffect(() => {
     api.get("/actions").then((response) => setActions(response.data));
   }, []);
 
   const addAction = async () => {
-    await api.post("/actions", { type, minute, player_id: playerId });
+    await api.post("/actions", { type, minute, dorsal: dorsal });
     window.location.reload();
   };
 
@@ -26,7 +26,7 @@ const Actions = () => {
         <option value="tarjeta roja">Tarjeta Roja</option>
       </select>
       <input type="number" placeholder="Minuto" onChange={(e) => setMinute(e.target.value)} />
-      <input type="text" placeholder="ID del jugador" onChange={(e) => setPlayerId(e.target.value)} />
+      <input type="text" placeholder="ID del jugador" onChange={(e) => setDorsal(e.target.value)} />
       <button onClick={addAction}>Agregar</button>
 
       <ul>

@@ -20,8 +20,9 @@ async def measure_time(request: Request, call_next):
 #Configuracion de CORS para permitir peticiones del frontend
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=["*"],
     #allow_origins=["http://localhost:5173"],
-    allow_origins=["mongodb+srv://user1:-ciencias01@cluster0.vvoun7i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"],
+    #allow_origins=["mongodb+srv://user1:-ciencias01@cluster0.vvoun7i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
