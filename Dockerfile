@@ -6,6 +6,9 @@ WORKDIR /test-backend
 
 COPY . /test-backend
 
+# Instala dependencias de backend
+RUN pip install -r test-backend/requirements.txt
+
 WORKDIR /test-backend/frontend
 RUN npm install
 
@@ -15,4 +18,4 @@ EXPOSE 8000 5173
 
 # comandos para ejecutar los servicios
 
-CMD bash -c "uvicorn test-backend/main:app --host 0.0.0.0 --port 8000 & cd test-backend/frontend && npm run dev -- --host"
+CMD bash -c "uvicorn test-backend/main:app --host 0.0.0.0 --port 8000 --reload & cd test-backend/frontend && npm run dev -- --host"
