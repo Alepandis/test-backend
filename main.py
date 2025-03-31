@@ -2,9 +2,11 @@ from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from motor.motor_asyncio import AsyncIOMotorClient
+from fastapi import HTTPException
 import redis
 import json
 import time
+from typing import List
 from bson import ObjectId
 
 app = FastAPI()
@@ -47,6 +49,7 @@ class Player(BaseModel):
 class Lineup(BaseModel):
     formacion: str
     type: str
+    jugadores: list
 
 class Action(BaseModel):
     type: str
@@ -117,6 +120,25 @@ async def create_lineup(lineup: Lineup):
     lineup_dict["_id"] = str(result.inserted_id)
 
     return lineup_dict
+
+@app.put("/lineups/{lineup_id}")
+async def add_players_to_lineup(lineup_id: str, players: List[str]):
+    # Buscar la alineación en la base de datos
+    lineup = await db.lineup.find_one({"_id": ObjectId(lineup_id)})
+
+    if not lineup:
+        raise HTTPException(status_code=404, detail="Lineup not found")
+
+    # Añadir jugadores a la alineación
+    updated_lineup = await db.lineup.update_one(
+        {"_id": ObjectId(lineup_id)},
+        {"$push": {"jugadores": {"$each": players}}}
+    )
+
+    if updated_lineup.modified_count > 0:
+        return {"msg": "Players added successfully"}
+    else:
+        raise HTTPException(status_code=400, detail="Failed to add players")
 
 @app.get("/lineups")
 async def list_lineups():
